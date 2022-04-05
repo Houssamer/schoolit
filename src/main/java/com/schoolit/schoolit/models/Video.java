@@ -13,6 +13,8 @@ public class Video extends Ressource{
     @NotEmpty(message = "Champ requis")
     private String lien;
 
+    private String imgLien;
+
     @Column(nullable = true)
     private String description;
 

@@ -13,7 +13,4 @@ public class Texte extends Ressource{
     @NotEmpty(message = "Champ requis")
     private String contenu;
 
-    @ManyToOne
-    private Cours cours;
-
 }

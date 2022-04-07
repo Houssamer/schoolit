@@ -10,10 +10,10 @@ import java.util.Collection;
 public interface IUtilisateurService {
     Utilisateur getUtilisateur(Long id);
     Utilisateur getUtilisateurByEmail(String email);
-    Apprenant ajouterApprenant(Apprenant apprenant);
-    Formateur ajouterFormateur(Formateur formateur);
+    void ajouterApprenant(Apprenant apprenant);
+    void ajouterFormateur(Formateur formateur);
     void deleteFormateur(Long id);
-    Utilisateur modifierUtilisateur(Utilisateur utilisateur);
+    void modifierUtilisateur(Utilisateur utilisateur);
     String enableCompte(Long id);
     Collection<Formateur> getFormateurs();
     Collection<Apprenant> getApprenants();

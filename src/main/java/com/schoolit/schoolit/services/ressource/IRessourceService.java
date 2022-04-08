@@ -11,8 +11,8 @@ public interface IRessourceService {
     Collection<Ressource> getRessources();
     Collection<Ressource> getRessourceParCours(Cours cours);
     Ressource getRessourceParTitre(String titre);
-    Video ajouterVideo(Video video);
-    Texte ajouterTexte(Texte texte);
+    void ajouterVideo(Video video);
+    void ajouterTexte(Texte texte);
     String modifierRessource(Ressource ressource);
     void deleteRessource(Long id);
 }

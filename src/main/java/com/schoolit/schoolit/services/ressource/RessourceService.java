@@ -1,5 +1,6 @@
 package com.schoolit.schoolit.services.ressource;
 
+import com.schoolit.schoolit.Exception.RessourceException;
 import com.schoolit.schoolit.models.Cours;
 import com.schoolit.schoolit.models.Ressource;
 import com.schoolit.schoolit.models.Texte;
@@ -23,36 +24,57 @@ public class RessourceService implements IRessourceService {
 
     @Override
     public Collection<Ressource> getRessources() {
-        return null;
+        return ressourceRepo.findAll();
     }
 
     @Override
     public Collection<Ressource> getRessourceParCours(Cours cours) {
-        return null;
+        return ressourceRepo.findByCours(cours);
     }
 
     @Override
     public Ressource getRessourceParTitre(String titre) {
-        return null;
+        return ressourceRepo.findByTitre(titre);
     }
 
     @Override
-    public Video ajouterVideo(Video video) {
-        return null;
+    public void ajouterVideo(Video video) {
+        boolean exist = ressourceRepo.existsById(video.getId());
+        if (exist) {
+            throw new RessourceException("Ressource deja existe");
+        } else {
+            ressourceRepo.save(video);
+        }
     }
 
     @Override
-    public Texte ajouterTexte(Texte texte) {
-        return null;
+    public void ajouterTexte(Texte texte) {
+        boolean exist = ressourceRepo.existsById(texte.getId());
+        if (exist) {
+            throw new RessourceException("Ressource deja existe");
+        } else {
+            ressourceRepo.save(texte);
+        }
     }
 
     @Override
     public String modifierRessource(Ressource ressource) {
-        return null;
+        boolean exist = ressourceRepo.existsById(ressource.getId());
+        if (exist) {
+            ressourceRepo.save(ressource);
+            return "Done";
+        } else {
+            throw new RessourceException();
+        }
     }
 
     @Override
     public void deleteRessource(Long id) {
-
+        boolean exist = ressourceRepo.existsById(id);
+        if (exist) {
+            ressourceRepo.deleteById(id);
+        } else {
+            throw new RessourceException();
+        }
     }
 }

@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Collection;
 
 public interface RessourceRepo extends JpaRepository<Ressource, Long> {
-    Collection<Ressource> findByCours(Cours cours);
+    Collection<Ressource> findRessourcesByCours(Cours cours);
     Ressource findByTitre(String titre);
 }

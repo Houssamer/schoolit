@@ -1,5 +1,6 @@
 package com.schoolit.schoolit.services.formation;
 
+import com.schoolit.schoolit.Exception.FormationException;
 import com.schoolit.schoolit.models.Formateur;
 import com.schoolit.schoolit.models.Formation;
 import com.schoolit.schoolit.repos.FormationRepo;
@@ -21,41 +22,57 @@ public class FormationService implements IFormationService {
 
     @Override
     public Collection<Formation> getFormations() {
-        return null;
+        return formationRepo.findAll();
     }
 
     @Override
     public Formation getFormation(Long id) {
-        return null;
+        return formationRepo.getById(id);
     }
 
     @Override
-    public Collection<Formation> getFormationParFormateur(Formateur formateur) {
-        return null;
+    public Collection<Formation> getFormationsParFormateur(Formateur formateur) {
+        return formationRepo.findFormationsByFormateur(formateur);
     }
 
     @Override
-    public Collection<Formation> getFormationParSpecialite(String specialite) {
-        return null;
+    public Collection<Formation> getFormationsParSpecialite(String specialite) {
+        return formationRepo.findFormationsBySpecialite(specialite);
     }
 
     @Override
     public Formation getFormationParNom(String nom) {
-        return null;
+        return formationRepo.findFormationByNom(nom);
     }
 
     @Override
-    public Formation ajouterFormation(Formation formation) {
-        return null;
+    public void ajouterFormation(Formation formation) {
+        boolean exist = formationRepo.existsById(formation.getId());
+        if (exist) {
+            throw new FormationException("Formation deja existe");
+        } else {
+            formationRepo.save(formation);
+        }
     }
 
     @Override
     public String modifierFormation(Formation formation) {
-        return null;
+        boolean exist = formationRepo.existsById(formation.getId());
+        if (exist) {
+            formationRepo.save(formation);
+            return "done";
+        } else {
+            throw new FormationException();
+        }
     }
 
     @Override
     public void deleteFormation(Long id) {
-
+        boolean exist = formationRepo.existsById(id);
+        if (exist) {
+            formationRepo.deleteById(id);
+        } else {
+            throw new FormationException();
+        }
     }
 }

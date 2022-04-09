@@ -29,7 +29,7 @@ public class RessourceService implements IRessourceService {
 
     @Override
     public Collection<Ressource> getRessourceParCours(Cours cours) {
-        return ressourceRepo.findByCours(cours);
+        return ressourceRepo.findRessourcesByCours(cours);
     }
 
     @Override

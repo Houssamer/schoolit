@@ -41,7 +41,21 @@ public abstract class Utilisateur implements UserDetails {
 
     @NotEmpty(message = "Champ requis")
     @Past
-    private LocalDate DateNaissance;
+    private LocalDate dateNaissance;
+
+    public Utilisateur(String nom,
+                       String prenom,
+                       String email,
+                       String username,
+                       LocalDate dateNaissance,
+                       String password) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.username = username;
+        this.dateNaissance = dateNaissance;
+        this.password = password;
+    }
 
     @Override
     public boolean isAccountNonExpired() {

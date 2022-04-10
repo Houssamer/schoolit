@@ -10,7 +10,7 @@ public interface ICoursService {
     Cours getCoursParTitre(String titre);
     Collection<Cours> getCoursParFormation(Formation formation);
     Collection<Cours> getCours();
-    Cours ajouterCours(Cours cours);
+    void ajouterCours(Cours cours);
     String modifierCours(Cours cours);
     void deleteCours(Long id);
 }

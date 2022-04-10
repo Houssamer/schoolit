@@ -1,5 +1,6 @@
 package com.schoolit.schoolit.services.cours;
 
+import com.schoolit.schoolit.Exception.CoursException;
 import com.schoolit.schoolit.models.Cours;
 import com.schoolit.schoolit.models.Formation;
 import com.schoolit.schoolit.repos.CoursRepo;
@@ -21,36 +22,52 @@ public class CoursService implements ICoursService {
 
     @Override
     public Cours GetCours(Long id) {
-        return null;
+        return coursRepo.getById(id);
     }
 
     @Override
     public Cours getCoursParTitre(String titre) {
-        return null;
+        return coursRepo.findCoursByTitre(titre);
     }
 
     @Override
     public Collection<Cours> getCoursParFormation(Formation formation) {
-        return null;
+        return coursRepo.findCoursByFormation(formation);
     }
 
     @Override
     public Collection<Cours> getCours() {
-        return null;
+        return coursRepo.findAll();
     }
 
     @Override
-    public Cours ajouterCours(Cours cours) {
-        return null;
+    public void ajouterCours(Cours cours) {
+        boolean exist = coursRepo.existsById(cours.getId());
+        if (exist) {
+            throw new CoursException("Cours deja existe");
+        } else {
+            coursRepo.save(cours);
+        }
     }
 
     @Override
     public String modifierCours(Cours cours) {
+        boolean exist = coursRepo.existsById(cours.getId());
+        if (exist) {
+            coursRepo.save(cours);
+        } else {
+            throw new CoursException();
+        }
         return null;
     }
 
     @Override
     public void deleteCours(Long id) {
-
+        boolean exist = coursRepo.existsById(id);
+        if (exist) {
+            coursRepo.deleteById(id);
+        } else {
+            throw new CoursException();
+        }
     }
 }

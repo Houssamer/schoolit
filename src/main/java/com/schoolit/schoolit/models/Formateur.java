@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -24,6 +25,15 @@ public class Formateur extends Utilisateur {
 
     @OneToMany(mappedBy = "formateur")
     private Collection<Formation> formationsCrees;
+
+    public Formateur(String nom,
+                     String prenom,
+                     String email,
+                     String username,
+                     LocalDate dateNaissance,
+                     String password) {
+        super(nom, prenom, email, username, dateNaissance, password);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

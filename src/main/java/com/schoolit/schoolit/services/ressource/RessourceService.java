@@ -28,6 +28,11 @@ public class RessourceService implements IRessourceService {
     }
 
     @Override
+    public Ressource getRessource(Long id) {
+        return  ressourceRepo.getById(id);
+    }
+
+    @Override
     public Collection<Ressource> getRessourceParCours(Cours cours) {
         return ressourceRepo.findRessourcesByCours(cours);
     }
@@ -58,11 +63,10 @@ public class RessourceService implements IRessourceService {
     }
 
     @Override
-    public String modifierRessource(Ressource ressource) {
+    public void modifierRessource(Ressource ressource) {
         boolean exist = ressourceRepo.existsById(ressource.getId());
         if (exist) {
             ressourceRepo.save(ressource);
-            return "Done";
         } else {
             throw new RessourceException();
         }

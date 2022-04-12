@@ -5,8 +5,11 @@ import com.schoolit.schoolit.models.requests.RegistrationRequest;
 import com.schoolit.schoolit.services.registration.RegistrationService;
 import com.schoolit.schoolit.services.utilisateur.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Collection;
 
 @RestController
@@ -23,42 +26,47 @@ public class FormateurController {
     }
 
     @GetMapping("/all")
-    public Collection<Formateur> getAllFormateur() {
-        return utilisateurService.getFormateurs();
+    public ResponseEntity<Collection<Formateur>> getAllFormateur() {
+        return ResponseEntity.ok().body(utilisateurService.getFormateurs());
     }
 
     @GetMapping("/{id}")
-    public Formateur getFormateurParId(@PathVariable Long id) {
-        return (Formateur) utilisateurService.getUtilisateur(id);
+    public ResponseEntity<Formateur> getFormateurParId(@PathVariable Long id) {
+        return ResponseEntity.ok().body((Formateur) utilisateurService.getUtilisateur(id));
     }
 
     @GetMapping("/disbaled")
-    public Collection<Formateur> getFormateurNonVerifie() {
-        return utilisateurService.getFormateurNonVerifie();
+    public ResponseEntity<Collection<Formateur>> getFormateurNonVerifie() {
+        return ResponseEntity.ok().body(utilisateurService.getFormateurNonVerifie());
     }
 
     @GetMapping("/enable/{id}")
-    public String enableFormateur(@PathVariable Long id) {
-        return utilisateurService.enableCompte(id);
+    public ResponseEntity<?> enableFormateur(@PathVariable Long id) {
+        return ResponseEntity.ok(utilisateurService.enableCompte(id));
     }
 
     @PostMapping("/find")
-    public Formateur getFormateurParEmail(String email) {
-        return (Formateur) utilisateurService.getUtilisateurByEmail(email);
+    public ResponseEntity<Formateur> getFormateurParEmail(String email) {
+        return ResponseEntity.ok().body((Formateur) utilisateurService.getUtilisateurByEmail(email));
     }
 
     @PostMapping("/add")
-    public void ajouterFormateur(@RequestBody RegistrationRequest request) {
-        registrationService.registerFormateur(request);
+    public ResponseEntity<Formateur> ajouterFormateur(@RequestBody RegistrationRequest request) {
+        URI uri = URI.create(
+                ServletUriComponentsBuilder
+                        .fromCurrentContextPath().path("/api/formateur/add").toUriString());
+        return ResponseEntity.created(uri).body(registrationService.registerFormateur(request));
     }
 
     @PutMapping("/update")
-    public void modifierFormateur(@RequestBody Formateur formateur) {
+    public ResponseEntity<?> modifierFormateur(@RequestBody Formateur formateur) {
         utilisateurService.modifierUtilisateur(formateur);
+        return ResponseEntity.ok("done");
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteFormateur(@PathVariable Long id) {
+    public ResponseEntity<?> deleteFormateur(@PathVariable Long id) {
         utilisateurService.deleteFormateur(id);
+        return ResponseEntity.ok("done");
     }
 }

@@ -5,6 +5,7 @@ import com.schoolit.schoolit.models.requests.RegistrationRequest;
 import com.schoolit.schoolit.services.registration.RegistrationService;
 import com.schoolit.schoolit.services.utilisateur.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -23,27 +24,28 @@ public class ApprenantController {
     }
 
     @GetMapping("/all")
-    public Collection<Apprenant> getAllApprenant() {
-        return utilisateurService.getApprenants();
+    public ResponseEntity<Collection<Apprenant>> getAllApprenant() {
+        return ResponseEntity.ok().body(utilisateurService.getApprenants());
     }
 
     @GetMapping("/{id}")
-    public Apprenant getApprenantParId(@PathVariable Long id) {
-        return (Apprenant) utilisateurService.getUtilisateur(id);
+    public ResponseEntity<Apprenant> getApprenantParId(@PathVariable Long id) {
+        return ResponseEntity.ok().body((Apprenant) utilisateurService.getUtilisateur(id));
     }
 
     @PostMapping("/find")
-    public Apprenant getApprenantParEmail(String email) {
-        return (Apprenant) utilisateurService.getUtilisateurByEmail(email);
+    public ResponseEntity<Apprenant> getApprenantParEmail(String email) {
+        return ResponseEntity.ok().body((Apprenant) utilisateurService.getUtilisateurByEmail(email));
     }
 
     @PostMapping("/add")
-    public void ajouterApprenant(@RequestBody RegistrationRequest request) {
-        registrationService.registerApprenant(request);
+    public ResponseEntity<Apprenant> ajouterApprenant(@RequestBody RegistrationRequest request) {
+        return ResponseEntity.ok().body(registrationService.registerApprenant(request));
     }
 
     @PutMapping("/update")
-    public void modifierApprenant(@RequestBody Apprenant apprenant) {
+    public ResponseEntity<?> modifierApprenant(@RequestBody Apprenant apprenant) {
         utilisateurService.modifierUtilisateur(apprenant);
+        return ResponseEntity.ok("done");
     }
 }

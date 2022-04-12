@@ -50,22 +50,22 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
     }
 
     @Override
-    public void ajouterApprenant(Apprenant apprenant) {
+    public Apprenant ajouterApprenant(Apprenant apprenant) {
         boolean exist  = apprenantUtilisateurRepo.existsById(apprenant.getId());
         if (exist) {
             throw new UtilisateurException("apprenant deja existe");
         } else {
-            apprenantUtilisateurRepo.save(apprenant);
+            return apprenantUtilisateurRepo.save(apprenant);
         }
     }
 
     @Override
-    public void ajouterFormateur(Formateur formateur) {
+    public Formateur ajouterFormateur(Formateur formateur) {
         boolean exist = formateurUtilisateurRepo.existsById(formateur.getId());
         if (exist) {
             throw new UtilisateurException("Formateur deja existe");
         } else {
-            formateurUtilisateurRepo.save(formateur);
+            return formateurUtilisateurRepo.save(formateur);
         }
     }
 

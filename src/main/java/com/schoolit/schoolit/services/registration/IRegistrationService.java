@@ -1,9 +1,11 @@
 package com.schoolit.schoolit.services.registration;
 
+import com.schoolit.schoolit.models.Apprenant;
+import com.schoolit.schoolit.models.Formateur;
 import com.schoolit.schoolit.models.requests.RegistrationRequest;
 
 public interface IRegistrationService {
 
-    public void registerFormateur(RegistrationRequest request);
-    public void registerApprenant(RegistrationRequest request);
+     Formateur registerFormateur(RegistrationRequest request);
+     Apprenant registerApprenant(RegistrationRequest request);
 }

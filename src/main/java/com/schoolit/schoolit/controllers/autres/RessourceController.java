@@ -4,6 +4,7 @@ import com.schoolit.schoolit.models.Cours;
 import com.schoolit.schoolit.models.Ressource;
 import com.schoolit.schoolit.models.Texte;
 import com.schoolit.schoolit.models.Video;
+import com.schoolit.schoolit.services.cours.CoursService;
 import com.schoolit.schoolit.services.ressource.RessourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,12 @@ import java.util.Collection;
 @RequestMapping("/api/ressource")
 public class RessourceController {
     private final RessourceService ressourceService;
+    private final CoursService coursService;
 
     @Autowired
-    public RessourceController(RessourceService ressourceService) {
+    public RessourceController(RessourceService ressourceService, CoursService coursService) {
         this.ressourceService = ressourceService;
+        this.coursService = coursService;
     }
 
     @GetMapping("/all")
@@ -34,7 +37,8 @@ public class RessourceController {
     }
 
     @PostMapping("/cours")
-    public ResponseEntity<Collection<Ressource>> getRessourceParCours(@RequestBody Cours cours) {
+    public ResponseEntity<Collection<Ressource>> getRessourceParCours(@RequestBody Long id) {
+        Cours cours = coursService.getCours(id);
         return ResponseEntity.ok().body(ressourceService.getRessourceParCours(cours));
     }
 
@@ -75,7 +79,7 @@ public class RessourceController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteRessource(@PathVariable Long id) {
         ressourceService.deleteRessource(id);
-        return ResponseEntity.ok("deleted");
+        return ResponseEntity.ok("ressource deleted");
     }
 
 }

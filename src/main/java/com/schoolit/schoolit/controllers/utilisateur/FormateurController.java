@@ -61,12 +61,12 @@ public class FormateurController {
     @PutMapping("/update")
     public ResponseEntity<?> modifierFormateur(@RequestBody Formateur formateur) {
         utilisateurService.modifierUtilisateur(formateur);
-        return ResponseEntity.ok("done");
+        return ResponseEntity.ok("formateur modifier");
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteFormateur(@PathVariable Long id) {
         utilisateurService.deleteFormateur(id);
-        return ResponseEntity.ok("done");
+        return ResponseEntity.ok("formateur supprime");
     }
 }

@@ -6,11 +6,11 @@ import com.schoolit.schoolit.models.Formation;
 import java.util.Collection;
 
 public interface ICoursService {
-    Cours GetCours(Long id);
+    Cours getCours(Long id);
     Cours getCoursParTitre(String titre);
     Collection<Cours> getCoursParFormation(Formation formation);
-    Collection<Cours> getCours();
-    void ajouterCours(Cours cours);
-    String modifierCours(Cours cours);
+    Collection<Cours> getAllCours();
+    Cours ajouterCours(Cours cours);
+    void modifierCours(Cours cours);
     void deleteCours(Long id);
 }

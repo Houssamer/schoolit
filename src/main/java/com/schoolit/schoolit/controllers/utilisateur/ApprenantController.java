@@ -46,6 +46,6 @@ public class ApprenantController {
     @PutMapping("/update")
     public ResponseEntity<?> modifierApprenant(@RequestBody Apprenant apprenant) {
         utilisateurService.modifierUtilisateur(apprenant);
-        return ResponseEntity.ok("done");
+        return ResponseEntity.ok("apprenant modifie");
     }
 }

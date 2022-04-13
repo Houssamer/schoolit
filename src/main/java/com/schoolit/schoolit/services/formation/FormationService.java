@@ -46,21 +46,20 @@ public class FormationService implements IFormationService {
     }
 
     @Override
-    public void ajouterFormation(Formation formation) {
+    public Formation ajouterFormation(Formation formation) {
         boolean exist = formationRepo.existsById(formation.getId());
         if (exist) {
             throw new FormationException("Formation deja existe");
         } else {
-            formationRepo.save(formation);
+            return formationRepo.save(formation);
         }
     }
 
     @Override
-    public String modifierFormation(Formation formation) {
+    public void modifierFormation(Formation formation) {
         boolean exist = formationRepo.existsById(formation.getId());
         if (exist) {
             formationRepo.save(formation);
-            return "done";
         } else {
             throw new FormationException();
         }

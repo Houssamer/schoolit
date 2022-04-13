@@ -11,7 +11,7 @@ public interface IFormationService {
     Collection<Formation> getFormationsParFormateur(Formateur formateur);
     Collection<Formation> getFormationsParSpecialite(String specialite);
     Formation getFormationParNom(String nom);
-    void ajouterFormation(Formation formation);
-    String modifierFormation(Formation formation);
+    Formation ajouterFormation(Formation formation);
+    void modifierFormation(Formation formation);
     void deleteFormation(Long id);
 }

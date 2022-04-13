@@ -21,7 +21,7 @@ public class CoursService implements ICoursService {
     }
 
     @Override
-    public Cours GetCours(Long id) {
+    public Cours getCours(Long id) {
         return coursRepo.getById(id);
     }
 
@@ -36,29 +36,28 @@ public class CoursService implements ICoursService {
     }
 
     @Override
-    public Collection<Cours> getCours() {
+    public Collection<Cours> getAllCours() {
         return coursRepo.findAll();
     }
 
     @Override
-    public void ajouterCours(Cours cours) {
+    public Cours ajouterCours(Cours cours) {
         boolean exist = coursRepo.existsById(cours.getId());
         if (exist) {
             throw new CoursException("Cours deja existe");
         } else {
-            coursRepo.save(cours);
+            return coursRepo.save(cours);
         }
     }
 
     @Override
-    public String modifierCours(Cours cours) {
+    public void modifierCours(Cours cours) {
         boolean exist = coursRepo.existsById(cours.getId());
         if (exist) {
             coursRepo.save(cours);
         } else {
             throw new CoursException();
         }
-        return null;
     }
 
     @Override

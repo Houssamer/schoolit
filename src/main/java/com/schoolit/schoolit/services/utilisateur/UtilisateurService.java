@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,14 +22,17 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
     private final UtilisateurRepo<Apprenant> apprenantUtilisateurRepo;
     private final UtilisateurRepo<Formateur> formateurUtilisateurRepo;
     private final UtilisateurRepo<Utilisateur> utilisateurRepo;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public UtilisateurService(UtilisateurRepo<Apprenant> apprenantUtilisateurRepo,
                               UtilisateurRepo<Formateur> formateurUtilisateurRepo,
-                              UtilisateurRepo<Utilisateur> utilisateurRepo) {
+                              UtilisateurRepo<Utilisateur> utilisateurRepo,
+                              BCryptPasswordEncoder passwordEncoder) {
         this.apprenantUtilisateurRepo = apprenantUtilisateurRepo;
         this.formateurUtilisateurRepo = formateurUtilisateurRepo;
         this.utilisateurRepo = utilisateurRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -55,6 +59,7 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
         if (exist) {
             throw new UtilisateurException("apprenant deja existe");
         } else {
+            apprenant.setPassword(passwordEncoder.encode(apprenant.getPassword()));
             return apprenantUtilisateurRepo.save(apprenant);
         }
     }
@@ -65,6 +70,7 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
         if (exist) {
             throw new UtilisateurException("Formateur deja existe");
         } else {
+            formateur.setPassword(passwordEncoder.encode(formateur.getPassword()));
             return formateurUtilisateurRepo.save(formateur);
         }
     }

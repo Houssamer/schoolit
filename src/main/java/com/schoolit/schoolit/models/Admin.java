@@ -6,7 +6,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,21 +17,15 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Entity
-@Table(name = "formateurs")
-@Data @AllArgsConstructor @NoArgsConstructor
-public class Formateur extends Utilisateur {
-
-    private Integer nbrFormations;
-
-    private boolean enabled = false;
-
+@Table(name = "admins")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Admin extends Utilisateur{
     @Transient
-    private final Role[] roles = {Role.Formatteur, Role.Apprenant};
+    private final Role[] roles = {Role.Admin};
 
-    @OneToMany(mappedBy = "formateur")
-    private Collection<Formation> formationsCrees;
-
-    public Formateur(String nom,
+    public Admin(String nom,
                      String prenom,
                      String email,
                      String username,
@@ -36,6 +33,7 @@ public class Formateur extends Utilisateur {
                      String password) {
         super(nom, prenom, email, username, dateNaissance, password);
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -45,10 +43,4 @@ public class Formateur extends Utilisateur {
         });
         return authorities;
     }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
 }

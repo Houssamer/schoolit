@@ -8,6 +8,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -18,7 +20,7 @@ public class Apprenant extends Utilisateur {
 
     private Integer nbrFormationsSuivies;
     @Transient
-    private Role role = Role.Apprenant;
+    private final Role[] roles = {Role.Apprenant};
 
     @ManyToMany(mappedBy = "apprenants")
     private Collection<Formation> formationsSuivies;
@@ -35,9 +37,11 @@ public class Apprenant extends Utilisateur {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority =
-                new SimpleGrantedAuthority(this.role.name());
-        return Collections.singletonList(authority);
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        Arrays.stream(roles).forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role.name()));
+        });
+        return authorities;
     }
 
 }

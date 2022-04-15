@@ -2,6 +2,7 @@ package com.schoolit.schoolit.security;
 
 import com.schoolit.schoolit.filter.AuthenticationFilter;
 import com.schoolit.schoolit.filter.AuthorizationFilter;
+import com.schoolit.schoolit.models.Role;
 import com.schoolit.schoolit.services.utilisateur.UtilisateurService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,13 +47,52 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             "/api/apprenant/add",
                             "/api/formateur/add").permitAll();
 
-        // apprenant
+        // acces aux cours
+        http
+                .authorizeRequests()
+                        .antMatchers("/api/cours/*").permitAll();
+        // acces aux formations
+        http
+                .authorizeRequests()
+                        .antMatchers("/api/formation/*").permitAll();
 
+        // acces aux Ressources
+        http
+                .authorizeRequests()
+                        .antMatchers("/api/ressource/*").permitAll();
+        // apprenant
+        http
+                .authorizeRequests()
+                        .antMatchers("/api/apprenant/{id}",
+                                "/api/apprenant/update")
+                        .hasAnyAuthority(Role.Apprenant.name());
 
         // formateur
-
+        http
+                .authorizeRequests()
+                        .antMatchers("/api/formateur/{id}",
+                                "/api/formateur/update",
+                                "/api/cours/add",
+                                "/api/cours/update",
+                                "/api/cours/delete/*",
+                                "/api/formation/add",
+                                "/api/formation/update",
+                                "/api/formation/delete/*",
+                                "/api/ressource/add/*",
+                                "/api/ressource/update/*",
+                                "/api/ressource/delete/*")
+                .hasAnyAuthority(Role.Formatteur.name());
 
         // admin
+        http
+                .authorizeRequests()
+                        .antMatchers("/api/apprenant/all",
+                                "/api/apprenant/find",
+                                "/api/formateur/all",
+                                "/api/formateur/disabled",
+                                "/api/formateur/enable/{id}",
+                                "/api/formateur/find",
+                                "/api/formateur/delete/*").hasAnyAuthority(Role.Admin.name());
 
         http.addFilter(new AuthenticationFilter(authenticationManagerBean()));
         http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

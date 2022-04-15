@@ -23,7 +23,7 @@ import java.util.Collections;
 @NoArgsConstructor
 public class Admin extends Utilisateur{
     @Transient
-    private final Role[] roles = {Role.Admin};
+    private final Role[] roles = {Role.Admin, Role.Apprenant, Role.Formatteur};
 
     public Admin(String nom,
                      String prenom,

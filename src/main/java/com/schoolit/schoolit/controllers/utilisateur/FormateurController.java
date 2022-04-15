@@ -1,17 +1,20 @@
 package com.schoolit.schoolit.controllers.utilisateur;
 
+import com.schoolit.schoolit.models.Admin;
 import com.schoolit.schoolit.models.Formateur;
+import com.schoolit.schoolit.models.Utilisateur;
 import com.schoolit.schoolit.models.requests.RegistrationRequest;
 import com.schoolit.schoolit.services.registration.RegistrationService;
 import com.schoolit.schoolit.services.utilisateur.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/formateur")
@@ -32,8 +35,16 @@ public class FormateurController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Formateur> getFormateurParId(@PathVariable Long id) {
-        return ResponseEntity.ok().body((Formateur) utilisateurService.getUtilisateur(id));
+    public ResponseEntity<?> getFormateurParId(@PathVariable Long id) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        if (!Objects.equals(user.getId(), id)  || !(user instanceof Admin)) {
+            return ResponseEntity.status(403).body("Unauthorized");
+        } else {
+            return ResponseEntity.ok().body((Formateur) utilisateurService.getUtilisateur(id));
+        }
     }
 
     @GetMapping("/disbaled")
@@ -61,13 +72,29 @@ public class FormateurController {
 
     @PutMapping("/update")
     public ResponseEntity<?> modifierFormateur(@RequestBody Formateur formateur) {
-        utilisateurService.modifierUtilisateur(formateur);
-        return ResponseEntity.ok("formateur modifier");
+        Utilisateur user = (Utilisateur) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        if (!Objects.equals(user.getId(), formateur.getId())  || !(user instanceof Admin)) {
+            return ResponseEntity.status(403).body("Unauthorized");
+        } else {
+            utilisateurService.modifierUtilisateur(formateur);
+            return ResponseEntity.ok("formateur modifier");
+        }
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteFormateur(@PathVariable Long id) {
-        utilisateurService.deleteFormateur(id);
-        return ResponseEntity.ok("formateur supprime");
+        Utilisateur user = (Utilisateur) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        if (!Objects.equals(user.getId(), id)  || !(user instanceof Admin)) {
+            return ResponseEntity.status(403).body("Unauthorized");
+        } else {
+            utilisateurService.deleteFormateur(id);
+            return ResponseEntity.ok("formateur supprime");
+        }
     }
 }

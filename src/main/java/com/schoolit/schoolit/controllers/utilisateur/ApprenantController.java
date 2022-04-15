@@ -1,14 +1,19 @@
 package com.schoolit.schoolit.controllers.utilisateur;
 
+import com.schoolit.schoolit.models.Admin;
 import com.schoolit.schoolit.models.Apprenant;
+import com.schoolit.schoolit.models.Utilisateur;
 import com.schoolit.schoolit.models.requests.RegistrationRequest;
 import com.schoolit.schoolit.services.registration.RegistrationService;
 import com.schoolit.schoolit.services.utilisateur.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/apprenant")
@@ -29,8 +34,16 @@ public class ApprenantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Apprenant> getApprenantParId(@PathVariable Long id) {
-        return ResponseEntity.ok().body((Apprenant) utilisateurService.getUtilisateur(id));
+    public ResponseEntity<?> getApprenantParId(@PathVariable Long id) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder
+                                            .getContext()
+                                            .getAuthentication()
+                                            .getPrincipal();
+        if (!Objects.equals(user.getId(), id)  || !(user instanceof Admin)) {
+            return ResponseEntity.status(403).body("Not authorized");
+        } else {
+            return ResponseEntity.ok().body((Apprenant) utilisateurService.getUtilisateur(id));
+        }
     }
 
     @PostMapping("/find")
@@ -45,7 +58,15 @@ public class ApprenantController {
 
     @PutMapping("/update")
     public ResponseEntity<?> modifierApprenant(@RequestBody Apprenant apprenant) {
-        utilisateurService.modifierUtilisateur(apprenant);
-        return ResponseEntity.ok("apprenant modifie");
+        Utilisateur user = (Utilisateur) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        if (!Objects.equals(user.getId(), apprenant.getId()) || !(user instanceof Admin)) {
+            return ResponseEntity.status(403).body("Unauthorized");
+        } else {
+            utilisateurService.modifierUtilisateur(apprenant);
+            return ResponseEntity.ok("apprenant modifie");
+        }
     }
 }

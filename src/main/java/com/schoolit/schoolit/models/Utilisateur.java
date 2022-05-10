@@ -18,7 +18,7 @@ import java.util.Collection;
 public abstract class Utilisateur implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotEmpty(message = "Champ requis")
@@ -35,12 +35,6 @@ public abstract class Utilisateur implements UserDetails {
     @NotEmpty(message = "Champ requis")
     private String prenom;
 
-    @NotEmpty(message = "Champ requis")
-    @Column(unique = true)
-    private String username;
-
-    @NotEmpty(message = "Champ requis")
-    @Past
     private LocalDate dateNaissance;
 
     public Utilisateur(String nom,
@@ -52,7 +46,6 @@ public abstract class Utilisateur implements UserDetails {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
-        this.username = username;
         this.dateNaissance = dateNaissance;
         this.password = password;
     }
@@ -76,4 +69,13 @@ public abstract class Utilisateur implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    public abstract Collection<Formation> getFormationsCrees();
+
+    public abstract Collection<Formation> getFormationsSuivies();
 }

@@ -3,6 +3,7 @@ package com.schoolit.schoolit.services.utilisateur;
 import com.schoolit.schoolit.Exception.UtilisateurException;
 import com.schoolit.schoolit.models.Apprenant;
 import com.schoolit.schoolit.models.Formateur;
+import com.schoolit.schoolit.models.Formation;
 import com.schoolit.schoolit.models.Utilisateur;
 import com.schoolit.schoolit.repos.UtilisateurRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,9 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
-        return null;
+        return utilisateurRepo
+                .findByEmail(username)
+                .orElseThrow(UtilisateurException::new);
     }
 
     @Override
@@ -50,28 +53,28 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
     public Utilisateur getUtilisateurByEmail(String email) {
         return utilisateurRepo
                 .findByEmail(email)
-                .orElseThrow(() -> new UtilisateurException());
+                .orElseThrow(UtilisateurException::new);
     }
 
     @Override
-    public Apprenant ajouterApprenant(Apprenant apprenant) {
-        boolean exist  = apprenantUtilisateurRepo.existsById(apprenant.getId());
-        if (exist) {
-            throw new UtilisateurException("apprenant deja existe");
-        } else {
+    public void ajouterApprenant(Apprenant apprenant) throws UtilisateurException {
+        boolean exist = apprenantUtilisateurRepo.findByEmail(apprenant.getEmail()).isPresent();
+        if (!exist) {
             apprenant.setPassword(passwordEncoder.encode(apprenant.getPassword()));
-            return apprenantUtilisateurRepo.save(apprenant);
+            apprenantUtilisateurRepo.save(apprenant);
+        } else {
+            throw new UtilisateurException("Apprenant deja existant");
         }
     }
 
     @Override
-    public Formateur ajouterFormateur(Formateur formateur) {
-        boolean exist = formateurUtilisateurRepo.existsById(formateur.getId());
-        if (exist) {
-            throw new UtilisateurException("Formateur deja existe");
-        } else {
+    public void ajouterFormateur(Formateur formateur) throws UtilisateurException {
+        boolean exist = formateurUtilisateurRepo.findByEmail(formateur.getEmail()).isPresent();
+        if (!exist) {
             formateur.setPassword(passwordEncoder.encode(formateur.getPassword()));
-            return formateurUtilisateurRepo.save(formateur);
+            formateurUtilisateurRepo.save(formateur);
+        } else {
+            throw new UtilisateurException("Formateur deja existant");
         }
     }
 
@@ -116,5 +119,17 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
     @Override
     public Collection<Formateur> getFormateurNonVerifie() {
         return formateurUtilisateurRepo.findDisbaledFormateur();
+    }
+
+    @Override
+    public Collection<Formation> getFormationsSuivies(Long id) {
+        Utilisateur apprenant = utilisateurRepo.getById(id);
+        return apprenant.getFormationsSuivies();
+    }
+
+    @Override
+    public Collection<Formation> getFormationsCrees(Long id) {
+        Utilisateur formateur = utilisateurRepo.getById(id);
+        return formateur.getFormationsCrees();
     }
 }

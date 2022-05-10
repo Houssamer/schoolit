@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 public abstract class Ressource {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotEmpty(message = "Champ requis")

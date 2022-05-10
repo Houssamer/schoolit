@@ -17,8 +17,8 @@ public class RegistrationService implements IRegistrationService {
     }
 
     @Override
-    public Formateur registerFormateur(RegistrationRequest request) {
-       return utilisateurService.ajouterFormateur(new Formateur(
+    public void registerFormateur(RegistrationRequest request) {
+        utilisateurService.ajouterFormateur(new Formateur(
                request.getNom(),
                request.getPrenom(),
                request.getEmail(),
@@ -29,8 +29,8 @@ public class RegistrationService implements IRegistrationService {
     }
 
     @Override
-    public Apprenant registerApprenant(RegistrationRequest request) {
-        return utilisateurService.ajouterApprenant(new Apprenant(
+    public void registerApprenant(RegistrationRequest request) {
+         utilisateurService.ajouterApprenant(new Apprenant(
                 request.getNom(),
                 request.getPrenom(),
                 request.getEmail(),

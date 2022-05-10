@@ -1,11 +1,13 @@
 package com.schoolit.schoolit.controllers.utilisateur;
 
+import com.schoolit.schoolit.Exception.UtilisateurException;
 import com.schoolit.schoolit.models.Admin;
 import com.schoolit.schoolit.models.Formateur;
 import com.schoolit.schoolit.models.Utilisateur;
 import com.schoolit.schoolit.models.requests.RegistrationRequest;
 import com.schoolit.schoolit.services.registration.RegistrationService;
 import com.schoolit.schoolit.services.utilisateur.UtilisateurService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,6 +49,19 @@ public class FormateurController {
         }
     }
 
+    @GetMapping("/formations/{id}")
+    public ResponseEntity<?> getFormationsCrees(@PathVariable Long id) {
+        Utilisateur user = (Utilisateur) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+        if (!Objects.equals(user.getId(), id)  || !(user instanceof Admin)) {
+            return ResponseEntity.status(403).body("Not authorized");
+        } else {
+            return ResponseEntity.ok().body(utilisateurService.getFormationsCrees(id));
+        }
+    }
+
     @GetMapping("/disbaled")
     public ResponseEntity<Collection<Formateur>> getFormateurNonVerifie() {
         return ResponseEntity.ok().body(utilisateurService.getFormateurNonVerifie());
@@ -63,11 +78,16 @@ public class FormateurController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Formateur> ajouterFormateur(@RequestBody RegistrationRequest request) {
+    public ResponseEntity<?> ajouterFormateur(@RequestBody RegistrationRequest request) {
         URI uri = URI.create(
                 ServletUriComponentsBuilder
                         .fromCurrentContextPath().path("/api/formateur/add").toUriString());
-        return ResponseEntity.created(uri).body(registrationService.registerFormateur(request));
+        try {
+            registrationService.registerFormateur(request);
+            return ResponseEntity.created(uri).body("Formateur bien ajoute");
+        } catch (UtilisateurException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/update")

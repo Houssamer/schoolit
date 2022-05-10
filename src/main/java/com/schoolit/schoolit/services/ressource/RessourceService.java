@@ -44,22 +44,12 @@ public class RessourceService implements IRessourceService {
 
     @Override
     public Video ajouterVideo(Video video) {
-        boolean exist = ressourceRepo.existsById(video.getId());
-        if (exist) {
-            throw new RessourceException("Ressource deja existe");
-        } else {
             return ressourceRepo.save(video);
-        }
     }
 
     @Override
     public Texte ajouterTexte(Texte texte) {
-        boolean exist = ressourceRepo.existsById(texte.getId());
-        if (exist) {
-            throw new RessourceException("Ressource deja existe");
-        } else {
             return ressourceRepo.save(texte);
-        }
     }
 
     @Override

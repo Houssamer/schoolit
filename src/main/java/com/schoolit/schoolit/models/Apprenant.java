@@ -5,17 +5,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 @Entity
 @Table(name = "apprenants")
 @Data @AllArgsConstructor @NoArgsConstructor
+
 public class Apprenant extends Utilisateur {
 
     private Integer nbrFormationsSuivies;
@@ -34,6 +35,10 @@ public class Apprenant extends Utilisateur {
         super(nom, prenom, email, username, dateNaissance, password);
     }
 
+    @Override
+    public Collection<Formation> getFormationsCrees() {
+        return null;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

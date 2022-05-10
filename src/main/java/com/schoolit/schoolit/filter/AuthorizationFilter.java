@@ -57,6 +57,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                     error.put("error_message", e.getMessage());
                     new ObjectMapper().writeValue(response.getOutputStream(), error);
                 }
+            } else {
+                filterChain.doFilter(request, response);
             }
         }
     }

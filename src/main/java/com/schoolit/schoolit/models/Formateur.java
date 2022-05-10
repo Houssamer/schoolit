@@ -51,4 +51,9 @@ public class Formateur extends Utilisateur {
         return enabled;
     }
 
+    @Override
+    public Collection<Formation> getFormationsSuivies() {
+        return null;
+    }
+
 }

@@ -19,7 +19,6 @@ import java.util.Collections;
 @Entity
 @Table(name = "admins")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class Admin extends Utilisateur{
     @Transient
@@ -32,6 +31,16 @@ public class Admin extends Utilisateur{
                      LocalDate dateNaissance,
                      String password) {
         super(nom, prenom, email, username, dateNaissance, password);
+    }
+
+    @Override
+    public Collection<Formation> getFormationsCrees() {
+        return null;
+    }
+
+    @Override
+    public Collection<Formation> getFormationsSuivies() {
+        return null;
     }
 
 

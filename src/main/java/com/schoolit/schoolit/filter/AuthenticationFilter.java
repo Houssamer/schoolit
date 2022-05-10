@@ -4,6 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.schoolit.schoolit.models.*;
+import com.schoolit.schoolit.models.requests.LoginRequest;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,15 +29,21 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         this.authenticationManager = authenticationManager;
         this.setFilterProcessesUrl("/api/login");
     }
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(email, password);
-        return authenticationManager.authenticate(authenticationToken);
+        try {
+            LoginRequest loginRequest = new ObjectMapper()
+                    .readValue(request.getInputStream(), LoginRequest.class);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
+            return authenticationManager.authenticate(authenticationToken);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
@@ -54,13 +62,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                     .withClaim("nom", user.getNom())
                     .withClaim("prenom", user.getPrenom())
                     .withClaim("dateNaissance", user.getDateNaissance().toString())
-                    .withClaim("role",
+                    .withClaim("roles",
                             user.getAuthorities()
                                     .stream()
                                     .map(GrantedAuthority::getAuthority)
                                     .collect(Collectors.toList()))
-                    .withClaim("formations", ((Apprenant) user).getFormationsSuivies()
-                            .stream().map(Formation::getNom).collect(Collectors.toList()))
                     .withIssuer("schoolit")
                     .sign(algorithm);
         } else if (user instanceof Formateur) {
@@ -71,13 +77,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                     .withClaim("nom", user.getNom())
                     .withClaim("prenom", user.getPrenom())
                     .withClaim("dateNaissance", user.getDateNaissance().toString())
-                    .withClaim("role",
+                    .withClaim("roles",
                             user.getAuthorities()
                                     .stream()
                                     .map(GrantedAuthority::getAuthority)
                                     .collect(Collectors.toList()))
-                    .withClaim("formations", ((Formateur) user).getFormationsCrees()
-                            .stream().map(Formation::getNom).collect(Collectors.toList()))
                     .withIssuer("schoolit")
                     .sign(algorithm);
         } else if (user instanceof Admin) {
@@ -88,7 +92,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                     .withClaim("nom", user.getNom())
                     .withClaim("prenom", user.getPrenom())
                     .withClaim("dateNaissance", user.getDateNaissance().toString())
-                    .withClaim("role",
+                    .withClaim("roles",
                             user.getAuthorities()
                                     .stream()
                                     .map(GrantedAuthority::getAuthority)

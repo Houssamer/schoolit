@@ -51,15 +51,7 @@ public class ApprenantController {
 
     @GetMapping("/formations/{id}")
     public ResponseEntity<?> getFormationsSuivies(@PathVariable Long id) {
-        Utilisateur user = (Utilisateur) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        if (!Objects.equals(user.getId(), id)  || !(user instanceof Admin)) {
-            return ResponseEntity.status(403).body("Not authorized");
-        } else {
             return ResponseEntity.ok().body(utilisateurService.getFormationsSuivies(id));
-        }
     }
 
     @PostMapping("/find")
@@ -82,15 +74,7 @@ public class ApprenantController {
 
     @PutMapping("/update")
     public ResponseEntity<?> modifierApprenant(@RequestBody Apprenant apprenant) {
-        Utilisateur user = (Utilisateur) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        if (!Objects.equals(user.getId(), apprenant.getId()) || !(user instanceof Admin)) {
-            return ResponseEntity.status(403).body("Unauthorized");
-        } else {
             utilisateurService.modifierUtilisateur(apprenant);
             return ResponseEntity.ok("apprenant modifie");
-        }
     }
 }

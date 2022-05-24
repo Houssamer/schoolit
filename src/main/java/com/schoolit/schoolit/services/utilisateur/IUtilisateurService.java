@@ -12,10 +12,11 @@ import java.util.Collection;
 public interface IUtilisateurService {
     Utilisateur getUtilisateur(Long id);
     Utilisateur getUtilisateurByEmail(String email);
-    void ajouterApprenant(Apprenant apprenant) throws UtilisateurException;
-    void ajouterFormateur(Formateur formateur) throws UtilisateurException;
+    String ajouterApprenant(Apprenant apprenant) throws UtilisateurException;
+    String ajouterFormateur(Formateur formateur) throws UtilisateurException;
     void deleteFormateur(Long id);
     void modifierUtilisateur(Utilisateur utilisateur);
+    void unlockUtilisateur(String email);
     String enableCompte(Long id);
     Collection<Formateur> getFormateurs();
     Collection<Apprenant> getApprenants();

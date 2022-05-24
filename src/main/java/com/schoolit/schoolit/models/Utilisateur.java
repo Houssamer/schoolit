@@ -36,11 +36,11 @@ public abstract class Utilisateur implements UserDetails {
     private String prenom;
 
     private LocalDate dateNaissance;
+    private boolean locked = true;
 
     public Utilisateur(String nom,
                        String prenom,
                        String email,
-                       String username,
                        LocalDate dateNaissance,
                        String password) {
         this.nom = nom;
@@ -57,7 +57,7 @@ public abstract class Utilisateur implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !locked;
     }
 
     @Override
@@ -73,6 +73,14 @@ public abstract class Utilisateur implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
     }
 
     public abstract Collection<Formation> getFormationsCrees();

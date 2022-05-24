@@ -27,10 +27,9 @@ public class Admin extends Utilisateur{
     public Admin(String nom,
                      String prenom,
                      String email,
-                     String username,
                      LocalDate dateNaissance,
                      String password) {
-        super(nom, prenom, email, username, dateNaissance, password);
+        super(nom, prenom, email, dateNaissance, password);
     }
 
     @Override

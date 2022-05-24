@@ -9,4 +9,5 @@ public interface IRegistrationService {
 
      void registerFormateur(RegistrationRequest request) throws UtilisateurException;
      void registerApprenant(RegistrationRequest request) throws UtilisateurException;
+     String confirmationToken(String token);
 }

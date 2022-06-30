@@ -6,6 +6,7 @@ import com.schoolit.schoolit.repos.ConfirmationTokenRepo;
 import com.schoolit.schoolit.repos.UtilisateurRepo;
 import com.schoolit.schoolit.services.confirmationtoken.IConfirmationTokenService;
 import com.schoolit.schoolit.services.emailsender.IEmailSenderService;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -67,15 +68,24 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
                 .orElseThrow(UtilisateurException::new);
     }
 
+
+    public Formateur getFormateurByEmail(String email) {
+        Formateur formateur = formateurUtilisateurRepo.findFormateurByEmail(email);
+        if (formateur == null) {
+            throw new UtilisateurException();
+        } else {
+            return formateur;
+        }
+    }
     @Override
     public String ajouterApprenant(Apprenant apprenant) throws UtilisateurException {
-        boolean exist = apprenantUtilisateurRepo.findByEmail(apprenant.getEmail()).isPresent();
-        if (!exist) {
+        Apprenant exist = apprenantUtilisateurRepo.findApprenantByEmail(apprenant.getEmail());
+        if (exist == null) {
             apprenant.setPassword(passwordEncoder.encode(apprenant.getPassword()));
             apprenantUtilisateurRepo.save(apprenant);
             return generateToken(apprenant);
         } else {
-            Utilisateur utilisateur = utilisateurRepo.findByEmail(apprenant.getEmail()).get();
+            Utilisateur utilisateur = utilisateurRepo.findApprenantByEmail(apprenant.getEmail());
             if (utilisateur.getLocked()) {
                 return generateToken(utilisateur);
             }
@@ -85,16 +95,13 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
 
     @Override
     public String ajouterFormateur(Formateur formateur) throws UtilisateurException {
-        boolean exist = formateurUtilisateurRepo.findByEmail(formateur.getEmail()).isPresent();
-        if (!exist) {
+        Formateur exist = formateurUtilisateurRepo.findFormateurByEmail(formateur.getEmail());
+        if (exist == null) {
             formateur.setPassword(passwordEncoder.encode(formateur.getPassword()));
+            formateur.setLocked(false);
             formateurUtilisateurRepo.save(formateur);
-            return generateToken(formateur);
+            return "Done";
         } else {
-            Utilisateur utilisateur = utilisateurRepo.findByEmail(formateur.getEmail()).get();
-            if (utilisateur.getLocked()) {
-                return generateToken(utilisateur);
-            }
             throw new UtilisateurException("Formateur deja existant");
         }
     }
@@ -106,6 +113,15 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
             formateurUtilisateurRepo.deleteById(id);
         } else {
             throw new UtilisateurException("Formateur n'existe pas");
+        }
+    }
+
+    public void deleteApprenant(String email) {
+        Apprenant exist = apprenantUtilisateurRepo.findApprenantByEmail(email);
+        if (exist != null) {
+            apprenantUtilisateurRepo.delete(exist);
+        } else {
+            throw new UtilisateurException("Apprenant n'existe pas");
         }
     }
 
@@ -121,11 +137,27 @@ public class UtilisateurService implements  IUtilisateurService, UserDetailsServ
     }
 
     @Override
-    public void unlockUtilisateur(String email) {
-        Utilisateur utilisateur = utilisateurRepo.findByEmail(email)
-                .orElseThrow(() -> new UtilisateurException("Utilisateur n'est pas trouve"));
-        utilisateur.setLocked(false);
-        utilisateurRepo.save(utilisateur);
+    public String unlockUtilisateur(String email) {
+        Formateur utilisateur = formateurUtilisateurRepo.findFormateurByEmail(email);
+        if (utilisateur == null) {
+            throw new UtilisateurException("User not found");
+        } else {
+            utilisateur.setLocked(false);
+            utilisateur.setEnabled(true);
+            formateurUtilisateurRepo.save(utilisateur);
+        }
+        return "Done";
+    }
+
+    public String unlockApprenant(String email) {
+        Apprenant utilisateur = apprenantUtilisateurRepo.findApprenantByEmail(email);
+        if (utilisateur == null) {
+            throw new UtilisateurException("User not found");
+        } else {
+            utilisateur.setLocked(false);
+            apprenantUtilisateurRepo.save(utilisateur);
+        }
+        return "Done";
     }
 
     @Override

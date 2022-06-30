@@ -16,7 +16,7 @@ public interface IUtilisateurService {
     String ajouterFormateur(Formateur formateur) throws UtilisateurException;
     void deleteFormateur(Long id);
     void modifierUtilisateur(Utilisateur utilisateur);
-    void unlockUtilisateur(String email);
+    String unlockUtilisateur(String email);
     String enableCompte(Long id);
     Collection<Formateur> getFormateurs();
     Collection<Apprenant> getApprenants();

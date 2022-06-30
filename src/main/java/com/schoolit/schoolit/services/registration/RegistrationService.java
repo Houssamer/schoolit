@@ -57,7 +57,7 @@ public class RegistrationService implements IRegistrationService {
         if (expiresAt.isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("token expired");
         }
-        utilisateurService.unlockUtilisateur(
+        utilisateurService.unlockApprenant(
                 confirmationToken.getUtilisateur().getEmail()
         );
         return "confirmed";

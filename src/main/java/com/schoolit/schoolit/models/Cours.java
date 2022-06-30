@@ -18,9 +18,6 @@ public class Cours {
     @NotEmpty(message = "Champ requis")
     private String titre;
 
-    @OneToMany(mappedBy = "cours")
-    private Collection<Ressource> ressources;
-
     @ManyToOne
     private Formation formation;
 

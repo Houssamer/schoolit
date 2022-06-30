@@ -17,7 +17,6 @@ public abstract class Ressource {
     @NotEmpty(message = "Champ requis")
     private String titre;
 
-    @ManyToOne
-    private Cours cours;
+    private String cours;
 
 }

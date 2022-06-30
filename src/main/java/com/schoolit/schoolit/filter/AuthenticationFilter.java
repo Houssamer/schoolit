@@ -73,7 +73,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         } else if (user instanceof Formateur) {
             accessToken = JWT.create()
                     .withSubject(user.getUsername())
-                    .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+                    .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 600 * 10000))
                     .withClaim("id", user.getId())
                     .withClaim("email", user.getEmail())
                     .withClaim("nom", user.getNom())

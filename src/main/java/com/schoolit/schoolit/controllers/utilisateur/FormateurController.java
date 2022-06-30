@@ -38,43 +38,28 @@ public class FormateurController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getFormateurParId(@PathVariable Long id) {
-        Utilisateur user = (Utilisateur) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        if (!Objects.equals(user.getId(), id)  || !(user instanceof Admin)) {
-            return ResponseEntity.status(403).body("Unauthorized");
-        } else {
             return ResponseEntity.ok().body((Formateur) utilisateurService.getUtilisateur(id));
-        }
     }
 
     @GetMapping("/formations/{id}")
-    public ResponseEntity<?> getFormationsCrees(@PathVariable Long id) {
-        Utilisateur user = (Utilisateur) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        if (!Objects.equals(user.getId(), id)  || !(user instanceof Admin)) {
-            return ResponseEntity.status(403).body("Not authorized");
-        } else {
+    public ResponseEntity<?> getFormationsCrees(@RequestParam("id") Long id) {
             return ResponseEntity.ok().body(utilisateurService.getFormationsCrees(id));
-        }
     }
 
-    @GetMapping("/disbaled")
+    @GetMapping("/disabled")
     public ResponseEntity<Collection<Formateur>> getFormateurNonVerifie() {
         return ResponseEntity.ok().body(utilisateurService.getFormateurNonVerifie());
     }
 
-    @GetMapping("/enable/{id}")
-    public ResponseEntity<?> enableFormateur(@PathVariable Long id) {
-        return ResponseEntity.ok(utilisateurService.enableCompte(id));
+    @PostMapping("/enable")
+    public ResponseEntity<?> enableFormateur(@RequestBody RegistrationRequest r) {
+        utilisateurService.deleteApprenant(r.getEmail());
+        return ResponseEntity.ok(utilisateurService.unlockUtilisateur(r.getEmail()));
     }
 
     @PostMapping("/find")
-    public ResponseEntity<Formateur> getFormateurParEmail(String email) {
-        return ResponseEntity.ok().body((Formateur) utilisateurService.getUtilisateurByEmail(email));
+    public ResponseEntity<Formateur> getFormateurParEmail(@RequestBody RegistrationRequest r) {
+        return ResponseEntity.ok().body(utilisateurService.getFormateurByEmail(r.getEmail()));
     }
 
     @PostMapping("/add")
@@ -92,29 +77,13 @@ public class FormateurController {
 
     @PutMapping("/update")
     public ResponseEntity<?> modifierFormateur(@RequestBody Formateur formateur) {
-        Utilisateur user = (Utilisateur) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        if (!Objects.equals(user.getId(), formateur.getId())  || !(user instanceof Admin)) {
-            return ResponseEntity.status(403).body("Unauthorized");
-        } else {
             utilisateurService.modifierUtilisateur(formateur);
             return ResponseEntity.ok("formateur modifier");
-        }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteFormateur(@PathVariable Long id) {
-        Utilisateur user = (Utilisateur) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        if (!Objects.equals(user.getId(), id)  || !(user instanceof Admin)) {
-            return ResponseEntity.status(403).body("Unauthorized");
-        } else {
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteFormateur(@RequestParam("id") Long id) {
             utilisateurService.deleteFormateur(id);
             return ResponseEntity.ok("formateur supprime");
-        }
     }
 }
